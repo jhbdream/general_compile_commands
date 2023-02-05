@@ -23,7 +23,6 @@ def get_c_source_files(ignore=""):
     cwd = os.getcwd()
     files = []
 
-    print("current work directory: " + cwd)
     print("find c files...")
 
     for f in glob.glob(cwd + "/**/*.c", recursive = True):
@@ -37,7 +36,6 @@ def get_include_file_path(ignore=""):
     cwd = os.getcwd()
     path = []
 
-    print("current work directory: " + cwd)
     print("find headers path...")
 
     for f in glob.glob(cwd + "/**/*.h", recursive = True):
@@ -49,8 +47,9 @@ def get_include_file_path(ignore=""):
     return path
 
 def gen_cflags(include="", defines="", extra=""):
-    cflags = []
+    print("gen_cflags")
 
+    cflags = []
     cflags.append("-std=gnu11")
 
     for path in include:
@@ -81,7 +80,7 @@ def gen_compile_command(filename, toolchain="gcc", cflags=[]):
     command.append(filename)
 
     return command
-    
+
 
 def main():
     output = _DEFAULT_OUTPUT
@@ -96,10 +95,13 @@ def main():
     defines = []
     cflags = []
 
+    print("work directory: " + root_dir)
+    print("use toolchain: " + toolchain)
+
     soruce_files = get_c_source_files()
     include_dirs = get_include_file_path()
     cflags = gen_cflags(include = include_dirs, defines = defines, extra = "")
-       
+
     for file in soruce_files:
         directory = root_dir
         file = file
@@ -115,6 +117,8 @@ def main():
 
     with open(output, 'wt') as f:
         json.dump(compile_commands, f, indent=4, sort_keys=False)
+
+    print("gen_compile_command success!")
 
 if __name__ == '__main__':
     main()
